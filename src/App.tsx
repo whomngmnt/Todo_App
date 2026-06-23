@@ -1,21 +1,37 @@
-import React from 'react';
-import './App.scss';
+import { useContext } from 'react';
+import { Footer } from './components/Footer/Footer';
+import { Header } from './components/Header/Header';
+import { TodoContext, TodoProvider } from './components/Context/TodoContext';
+import { TodoList } from './components/TodoList/TodoList';
 
-interface Props {
-  onClick: () => void;
-  children: React.ReactNode;
-}
+const TodoApp = () => {
+  const context = useContext(TodoContext);
 
-export const Provider: React.FC<Props> = React.memo(({ onClick, children }) => (
-  <button type="button" onClick={onClick}>
-    {children}
-  </button>
-));
+  if (!context) {
+    return null;
+  }
 
-export const App: React.FC = () => {
+  const hasTodos = context.state.todos.length > 0;
+
   return (
-    <div className="starter">
-      <Provider onClick={() => ({})}>TodoList</Provider>
+    <div className="todoapp">
+      <h1 className="todoapp__title">todos</h1>
+
+      <div className="todoapp__content">
+        <Header />
+        {hasTodos && (
+          <>
+            <TodoList />
+            <Footer />
+          </>
+        )}
+      </div>
     </div>
   );
 };
+
+export const App = () => (
+  <TodoProvider>
+    <TodoApp />
+  </TodoProvider>
+);
